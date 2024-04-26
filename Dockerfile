@@ -1,37 +1,36 @@
-#for dev
-FROM node:18-alpine as dev
+ARG NODE_VERSION=18.0.0
 
-WORKDIR /usr/app
+#--base--
+FROM node:${NODE_VERSION}-alpine as base
+
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+EXPOSE 3000
 
-COPY . .
+#--dev--
+FROM base as dev
+
+RUN npm ci --include=dev
 
 RUN chown -R node:node .
 
-EXPOSE 3000
-
 USER node
+
+COPY . .
 
 CMD ["npm", "run", "dev"]
 
-#for prod
-FROM node:18-alpine as prod
-
-WORKDIR /usr/app
-
-COPY package*.json ./
+#--prod--
+FROM base as prod
 
 RUN npm ci --omit=dev
 
-COPY . .
-
 RUN chown -R node:node .
 
-EXPOSE 3000
-
 USER node
+
+COPY . .
 
 ENTRYPOINT ["node","./src/index.js"]
