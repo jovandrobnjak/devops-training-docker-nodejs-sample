@@ -9,10 +9,13 @@ RUN npm install
 
 COPY . .
 
+RUN chown -R node:node .
+
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+USER node
 
+CMD ["npm", "run", "dev"]
 
 #for prod
 FROM node:18-alpine as prod
@@ -25,6 +28,10 @@ RUN npm ci --omit=dev
 
 COPY . .
 
+RUN chown -R node:node .
+
 EXPOSE 3000
+
+USER node
 
 ENTRYPOINT ["node","./src/index.js"]
