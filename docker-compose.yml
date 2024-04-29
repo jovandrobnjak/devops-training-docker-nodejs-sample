@@ -1,0 +1,21 @@
+services:
+    webapp:
+        build:
+            context: .
+            target: dev
+            tags:
+                - 'dev'
+        ports:
+            - '3000:3000'
+        env_file:
+            - path: ./env/.env
+              required: true
+    db:
+        image: postgres
+        ports:
+            - '5432:5432'
+        env_file:
+            - path: ./env/.env
+              required: true
+        volumes:
+            - ./database_init:/docker-entrypoint-initdb.d
