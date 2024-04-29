@@ -1,6 +1,9 @@
 name: Create and publish a Docker image
 
-on: workflow_dispatch
+on:
+    push:
+        tags:
+            - 'v*.*.*'
 
 env:
     REGISTRY: ghcr.io
@@ -28,4 +31,4 @@ jobs:
               with:
                   context: .
                   push: true
-                  tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+                  tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{github.ref_name}}
