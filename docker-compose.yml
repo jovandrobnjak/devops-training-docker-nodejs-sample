@@ -17,5 +17,3 @@ services:
         env_file:
             - path: ./env/.env
               required: true
-        volumes:
-            - ./database_init:/docker-entrypoint-initdb.d
