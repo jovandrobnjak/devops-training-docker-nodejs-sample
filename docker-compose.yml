@@ -1,0 +1,23 @@
+services:
+    webapp:
+        build:
+            context: .
+            target: dev
+            tags:
+                - 'dev'
+        ports:
+            - '3000:3000'
+        environment:
+            POSTGRES_PASSWORD: 'postgres'
+            POSTGRES_DATABASE: 'todo'
+            POSTGRES_USER: 'postgres'
+            POSTGRES_PORT: 5432
+            POSTGRES_HOST: 'db'
+    db:
+        image: postgres
+        ports:
+            - '5432:5432'
+        environment:
+            POSTGRES_PASSWORD: 'postgres'
+            POSTGRES_DATABASE: 'todo'
+            POSTGRES_USER: 'postgres'
