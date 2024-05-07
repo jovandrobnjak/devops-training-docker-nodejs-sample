@@ -1,12 +1,8 @@
 services:
     webapp:
-        build:
-            context: .
-            target: dev
-            tags:
-                - 'dev'
+        image: ghcr.io/jovandrobnjak/devops-training-docker-nodejs-sample:v1.1.0
         ports:
-            - '3000:3000'
+            - '3000:80'
         environment:
             POSTGRES_PASSWORD: 'postgres'
             POSTGRES_DATABASE: 'todo'
