@@ -53,8 +53,8 @@ module "subnet_addrs" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = module.subnet_addrs.base_cidr_block
-  cidr = "172.18.0.0/16"
+  name = "vpc-jovand-02"
+  cidr = module.subnet_addrs.base_cidr_block
   azs  = data.aws_availability_zones.available_zones.names
 
   private_subnets        = [for key in local.private_subnet_keys : module.subnet_addrs.network_cidr_blocks[key]]
