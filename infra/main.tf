@@ -19,18 +19,49 @@ provider "aws" {
   token      = var.aws_session_token
 }
 
-module "network" {
-  source = "./modules/network"
+module "subnet_addrs" {
+  source          = "hashicorp/subnets/cidr"
+  base_cidr_block = "172.18.0.0/16"
+  networks = [
+    {
+      name     = "private-a"
+      new_bits = 2
+    },
+    {
+      name     = "private-b"
+      new_bits = 2
+    },
+    {
+      name     = "private-c"
+      new_bits = 2
+    },
+    {
+      name     = "public-a"
+      new_bits = 8
+    },
+    {
+      name     = "public-b"
+      new_bits = 8
+    },
+    {
+      name     = "public-c"
+      new_bits = 8
+    },
+  ]
 }
 
-module "routing" {
-  source     = "./modules/routing"
-  depends_on = [module.network]
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
 
-  vpc_cidr_block      = module.network.vpc_cidr_block
-  vpc_id              = module.network.vpc_id
-  private_subnet_ids  = module.network.private_ids
-  public_subnet_ids   = module.network.public_ids
-  internet_gateway_id = module.network.internet_gateway_id
-  nat_gateway_id      = module.network.nat_gateway_id
+  name = module.subnet_addrs.base_cidr_block
+  cidr = "172.18.0.0/16"
+  azs  = data.aws_availability_zones.available_zones.names
+
+  private_subnets        = [for key in local.private_subnet_keys : module.subnet_addrs.network_cidr_blocks[key]]
+  public_subnets         = [for key in local.public_subnet_keys : module.subnet_addrs.network_cidr_blocks[key]]
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  one_nat_gateway_per_az = false
+  create_igw             = true
+
 }
