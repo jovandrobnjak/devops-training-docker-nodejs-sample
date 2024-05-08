@@ -20,8 +20,13 @@ resource "aws_internet_gateway" "igw-jovand-02" {
   vpc_id = aws_vpc.vpc-jovand-02.id
 }
 
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
 resource "aws_nat_gateway" "nat-gw-jovand-02" {
-  subnet_id  = aws_subnet.public_subnets[0].id
-  depends_on = [aws_internet_gateway.igw-jovand-02]
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnets[0].id
+  depends_on    = [aws_internet_gateway.igw-jovand-02]
 }
 
