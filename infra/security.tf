@@ -1,8 +1,10 @@
-resource "aws_iam_policy" "ecr_policy" {
+module "iam_policy" {
+  source      = "terraform-aws-modules/iam/aws//modules/iam-policy"
   name        = "github_action_policy"
   description = "Policy for pushing images into ECR with github action"
 
-  policy = jsonencode({
+  policy = <<EOF
+  {
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -18,7 +20,8 @@ resource "aws_iam_policy" "ecr_policy" {
         "Resource" : "*"
       }
     ]
-  })
+  }
+  EOF
 }
 
 module "iam_assumable_role_with_oidc" {
@@ -35,7 +38,7 @@ module "iam_assumable_role_with_oidc" {
   provider_url = "https://token.actions.githubusercontent.com"
 
   role_policy_arns = [
-    aws_iam_policy.ecr_policy.arn
+    module.iam_policy.arn
   ]
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
   number_of_role_policy_arns     = 1
