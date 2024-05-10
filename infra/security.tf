@@ -35,8 +35,7 @@ module "iam_github_oidc_provider" {
 }
 
 module "iam_assumable_role_with_oidc" {
-  depends_on = [module.iam_policy]
-  source     = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
 
   oidc_subjects_with_wildcards = ["repo:jovandrobnjak/devops-training-docker-nodejs-sample:*"]
 

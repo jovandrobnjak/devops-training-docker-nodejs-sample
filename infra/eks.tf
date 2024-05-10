@@ -18,7 +18,7 @@ module "eks" {
       iam_role_additional_policies = {
         AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
       }
-      ami_type     = "BOTTLEROCKET_ARM_64"
+      ami_type     = "BOTTLEROCKET_ARM_x86_64"
       min_size     = 1
       max_size     = 10
       desired_size = 1
