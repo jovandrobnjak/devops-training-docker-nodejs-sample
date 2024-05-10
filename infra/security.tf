@@ -26,19 +26,14 @@ module "iam_policy" {
 EOF
 }
 
-resource "aws_iam_openid_connect_provider" "github" {
-  url             = "https://token.actions.githubusercontent.com"
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = ["1b511abead59c6ce207077c0bf0e0043b1382612"]
+module "iam_github_oidc_provider" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-github-oidc-provider"
 
   tags = {
     Owner = "Igor Kostin"
   }
 }
-import {
-  id = "arn:aws:iam::162340708442:oidc-provider/token.actions.githubusercontent.com"
-  to = aws_iam_openid_connect_provider.github
-}
+
 module "iam_assumable_role_with_oidc" {
   depends_on = [module.iam_policy]
   source     = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -53,7 +48,7 @@ module "iam_assumable_role_with_oidc" {
     Role = "role-with-oidc"
   }
 
-  provider_url = aws_iam_openid_connect_provider.github.url
+  provider_url = module.iam_github_oidc_provider.url
 
   number_of_role_policy_arns = 1
 
