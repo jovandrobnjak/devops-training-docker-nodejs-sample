@@ -52,7 +52,7 @@ module "iam_assumable_role_with_oidc" {
 
   number_of_role_policy_arns = 1
 
-  role_policy_arns = [module.iam_policy.arn]
+  role_policy_arns = [module.iam_policy.arn, "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"]
 
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
 }
