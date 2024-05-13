@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
+  version = "~> 20.10"
 
   cluster_name    = "jovand-cluster"
   cluster_version = "1.29"
@@ -27,13 +27,16 @@ module "eks" {
       capacity_type  = "ON_DEMAND"
     }
   }
-
-  enable_cluster_creator_admin_permissions = true
+  authentication_mode = "API"
 
   access_entries = {
     jovand-access-entry = {
       kubernetes_groups = []
       principal_arn     = module.iam_assumable_role_with_oidc.iam_role_arn
+      access_scope = {
+        namespaces = ["default"]
+        type       = "namespace"
+      }
     }
   }
 }

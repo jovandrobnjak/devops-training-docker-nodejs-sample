@@ -61,6 +61,13 @@ module "iam_eks_role" {
   role_name = "jovand-irsa-lb"
 
   attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    one = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["default:jovand-cluster"]
+    }
+  }
 }
 
 
