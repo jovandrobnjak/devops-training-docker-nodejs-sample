@@ -27,16 +27,6 @@ module "eks" {
       capacity_type  = "ON_DEMAND"
     }
   }
-  authentication_mode = "API"
-
-  access_entries = {
-    jovand-access-entry = {
-      kubernetes_groups = []
-      principal_arn     = module.iam_assumable_role_with_oidc.iam_role_arn
-      access_scope = {
-        namespaces = ["default"]
-        type       = "namespace"
-      }
-    }
-  }
+  authentication_mode                      = "API"
+  enable_cluster_creator_admin_permissions = true
 }
