@@ -35,8 +35,7 @@ module "iam_github_oidc_provider" {
 }
 
 module "iam_assumable_role_with_oidc" {
-  depends_on = [module.iam_policy]
-  source     = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
 
   oidc_subjects_with_wildcards = ["repo:jovandrobnjak/devops-training-docker-nodejs-sample:*"]
 
@@ -55,4 +54,35 @@ module "iam_assumable_role_with_oidc" {
   role_policy_arns = [module.iam_policy.arn]
 
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
+}
+
+module "iam_eks_role" {
+  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  role_name = "jovand-irsa-lb"
+
+  attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["default:devops-training-docker-nodejs-sample"]
+    }
+  }
+}
+
+data "aws_route53_zone" "omage_hosted_zone" {
+  name = "omega.devops.sitesstage.com"
+}
+
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 4.0"
+
+  domain_name = "jovan-drobnjak.omega.devops.sitesstage.com"
+  zone_id     = data.aws_route53_zone.omage_hosted_zone.zone_id
+
+  validation_method = "DNS"
+
+  wait_for_validation = true
+
 }

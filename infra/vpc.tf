@@ -1,3 +1,7 @@
+data "aws_availability_zones" "available_zones" {
+  state = "available"
+}
+
 module "subnet_addrs" {
   source          = "hashicorp/subnets/cidr"
   base_cidr_block = "172.18.0.0/16"
