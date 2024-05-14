@@ -51,7 +51,7 @@ module "iam_assumable_role_with_oidc" {
 
   number_of_role_policy_arns = 1
 
-  role_policy_arns = [module.iam_policy.arn, "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"]
+  role_policy_arns = [module.iam_policy.arn]
 
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
 }
@@ -70,6 +70,9 @@ module "iam_eks_role" {
   }
 }
 
+data "aws_route53_zone" "omage_hosted_zone" {
+  name = "omega.devops.sitesstage.com"
+}
 
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
