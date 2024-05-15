@@ -1,5 +1,3 @@
-# helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=jovand-cluster -n kube-system --set serviceAccount.create=false --set serviceAccount.name=devops-training-docker-nodejs-sample
-
 resource "helm_release" "load_balancer_controller" {
   name       = "jovand-loadbalancer-controller"
   repository = "https://aws.github.io/eks-charts"
