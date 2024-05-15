@@ -21,6 +21,22 @@ resource "helm_release" "bitnami_psql" {
   namespace  = "vegait-training"
 
   set {
+    name  = "auth.username"
+    value = "postgres"
+  }
+  set {
+    name  = "auth.password"
+    value = "postgres"
+  }
+  set {
+    name  = "auth.database"
+    value = "todo"
+  }
+  set {
+    name  = "containerPorts.postgresql"
+    value = 5432
+  }
+  set {
     name  = "persistence.existingClaim"
     value = kubernetes_persistent_volume_claim.postgres_pvc.metadata[0].name
   }
