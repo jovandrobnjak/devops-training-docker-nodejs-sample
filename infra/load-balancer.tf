@@ -15,7 +15,7 @@ resource "helm_release" "load_balancer_controller" {
 
   set {
     name  = "serviceAccount.name"
-    value = "devops-training-docker-nodejs-sample"
+    value = "aws-load-balancer-controller"
   }
 
   set {
