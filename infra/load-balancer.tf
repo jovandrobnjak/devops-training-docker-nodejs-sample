@@ -15,7 +15,7 @@ resource "helm_release" "load_balancer_controller" {
 
   set {
     name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
+    value = "load-balancer-controller"
   }
 
   set {
