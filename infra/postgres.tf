@@ -29,4 +29,8 @@ resource "helm_release" "bitnami_psql" {
     name  = "primary.persistence.volumeName"
     value = "jovand-postgres-pvc"
   }
+  set {
+    name  = "serviceAccount.create"
+    value = false
+  }
 }
