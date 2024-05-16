@@ -56,7 +56,7 @@ module "iam_assumable_role_with_oidc" {
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
 }
 
-module "iam_eks_role" {
+module "iam_load_balancer_irsa" {
   source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   role_name = "jovand-irsa-lb"
 
