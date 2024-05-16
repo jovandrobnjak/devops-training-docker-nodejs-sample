@@ -3,7 +3,7 @@ module "eks" {
   version = "~> 20.10"
 
   cluster_name    = "jovand-cluster"
-  cluster_version = "1.29"
+  cluster_version = "v1.30"
 
   cluster_endpoint_public_access       = true
   cluster_endpoint_private_access      = true
