@@ -3,6 +3,7 @@ resource "helm_release" "bitnami_psql" {
   repository = "oci://registry-1.docker.io/bitnamicharts/postgresql"
   chart      = "my-release"
   namespace  = "vegait-training"
+  version    = "15.3.2"
 
   set {
     name  = "auth.username"
