@@ -1,19 +1,3 @@
-resource "kubernetes_persistent_volume_claim" "postgres_pvc" {
-  metadata {
-    name      = "jovand-postgres-db-pv"
-    namespace = "vegait-training"
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    resources {
-      requests = {
-        storage = "1Gi"
-      }
-    }
-  }
-}
-
-
 resource "helm_release" "bitnami_psql" {
   name       = "jovand-psql-bitnami"
   repository = "oci://registry-1.docker.io/bitnamicharts/postgresql"
@@ -37,7 +21,11 @@ resource "helm_release" "bitnami_psql" {
     value = 5432
   }
   set {
-    name  = "persistence.existingClaim"
-    value = kubernetes_persistent_volume_claim.postgres_pvc.metadata[0].name
+    name  = "primary.persistence.enabled"
+    value = true
+  }
+  set {
+    name  = "primary.persistence.volumeName"
+    value = "jovand-postgres-pvc"
   }
 }
