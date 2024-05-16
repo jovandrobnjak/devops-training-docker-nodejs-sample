@@ -7,19 +7,19 @@ resource "helm_release" "bitnami_psql" {
 
   set {
     name  = "auth.username"
-    value = jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string))["username"]
+    value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "username", "what?")
   }
   set {
     name  = "auth.password"
-    value = jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string))["password"]
+    value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "password", "what?")
   }
   set {
     name  = "auth.database"
-    value = jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string))["dbname"]
+    value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "dbname", "what?")
   }
   set {
     name  = "containerPorts.postgresql"
-    value = jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string))["port"]
+    value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "port", 0)
   }
   set {
     name  = "primary.persistence.enabled"
