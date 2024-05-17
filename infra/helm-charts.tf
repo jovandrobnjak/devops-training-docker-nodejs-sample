@@ -1,7 +1,7 @@
 resource "helm_release" "bitnami_psql" {
   name       = "jovand-psql-bitnami"
-  repository = "oci://registry-1.docker.io/bitnamicharts/postgresql"
-  chart      = "my-release"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "postgresql"
   namespace  = "vegait-training"
   version    = "15.3.2"
 
@@ -32,5 +32,47 @@ resource "helm_release" "bitnami_psql" {
   set {
     name  = "serviceAccount.create"
     value = false
+  }
+
+  set {
+    name  = "primary.persistence.storageClass"
+    value = kubernetes_storage_class.eks_storage_class.metadata[0].name
+  }
+  set {
+    name  = "primary.persistence.size"
+    value = "8Gi"
+  }
+}
+
+resource "helm_release" "load_balancer_controller" {
+  name       = "jovand-loadbalancer-controller"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  namespace  = "load-balancer"
+  version    = "1.7.2"
+
+  set {
+    name  = "clusterName"
+    value = module.eks.cluster_name
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_load_balancer_irsa.iam_role_arn
+  }
+
+  set {
+    name  = "defaultTargetType"
+    value = "ip"
+  }
+
+  set {
+    name  = "region"
+    value = "eu-central-1"
   }
 }

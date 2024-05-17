@@ -3,7 +3,7 @@ module "eks" {
   version = "~> 20.10"
 
   cluster_name    = "jovand-cluster"
-  cluster_version = "v1.30"
+  cluster_version = "1.29"
 
   cluster_endpoint_public_access       = true
   cluster_endpoint_private_access      = true
@@ -11,6 +11,14 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      addon_version            = "v1.30.0-eksbuild.1"
+      service_account_role_arn = module.iam_csi_driver_irsa.iam_role_arn
+      resolve_conflicts        = "PRESERVE"
+    }
+  }
 
   eks_managed_node_groups = {
     jovand-node-group = {
@@ -29,4 +37,30 @@ module "eks" {
   }
   authentication_mode                      = "API"
   enable_cluster_creator_admin_permissions = true
+}
+
+
+resource "kubernetes_storage_class" "eks_storage_class" {
+  metadata {
+    name = "jovand-storage-class"
+  }
+  depends_on = [module.eks]
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = true
+  parameters = {
+    "encrypted" = "true"
+  }
+}
+
+resource "kubernetes_namespace" "vegait-training" {
+  metadata {
+    name = "vegait-training"
+  }
+}
+resource "kubernetes_namespace" "load-balancer" {
+  metadata {
+    name = "load-balancer"
+  }
 }
