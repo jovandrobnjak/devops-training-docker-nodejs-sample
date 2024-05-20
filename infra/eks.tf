@@ -53,14 +53,3 @@ resource "kubernetes_storage_class" "eks_storage_class" {
     "encrypted" = "true"
   }
 }
-
-resource "kubernetes_namespace" "vegait-training" {
-  metadata {
-    name = "vegait-training"
-  }
-}
-resource "kubernetes_namespace" "load-balancer" {
-  metadata {
-    name = "load-balancer"
-  }
-}

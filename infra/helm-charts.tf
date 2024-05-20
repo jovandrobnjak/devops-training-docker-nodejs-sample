@@ -1,10 +1,10 @@
 resource "helm_release" "bitnami_psql" {
-  name       = "jovand-psql-bitnami"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "postgresql"
-  namespace  = "vegait-training"
-  version    = "15.3.2"
-
+  name             = "jovand-psql-bitnami"
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "postgresql"
+  namespace        = "vegait-training"
+  version          = "15.3.2"
+  create_namespace = true
   set {
     name  = "auth.username"
     value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "username", "what?")
@@ -45,12 +45,12 @@ resource "helm_release" "bitnami_psql" {
 }
 
 resource "helm_release" "load_balancer_controller" {
-  name       = "jovand-loadbalancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "load-balancer"
-  version    = "1.7.2"
-
+  name             = "jovand-loadbalancer-controller"
+  repository       = "https://aws.github.io/eks-charts"
+  chart            = "aws-load-balancer-controller"
+  namespace        = "load-balancer"
+  version          = "1.7.2"
+  create_namespace = true
   set {
     name  = "clusterName"
     value = module.eks.cluster_name
