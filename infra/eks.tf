@@ -12,6 +12,14 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      addon_version            = "v1.30.0-eksbuild.1"
+      service_account_role_arn = module.iam_csi_driver_irsa.iam_role_arn
+      resolve_conflicts        = "PRESERVE"
+    }
+  }
+
   eks_managed_node_groups = {
     jovand-node-group = {
       create_iam_role = true
@@ -29,4 +37,19 @@ module "eks" {
   }
   authentication_mode                      = "API"
   enable_cluster_creator_admin_permissions = true
+}
+
+
+resource "kubernetes_storage_class" "eks_storage_class" {
+  metadata {
+    name = "jovand-storage-class"
+  }
+  depends_on = [module.eks]
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = true
+  parameters = {
+    "encrypted" = "true"
+  }
 }

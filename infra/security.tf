@@ -56,7 +56,7 @@ module "iam_assumable_role_with_oidc" {
   oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
 }
 
-module "iam_eks_role" {
+module "iam_load_balancer_irsa" {
   source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   role_name = "jovand-irsa-lb"
 
@@ -65,7 +65,21 @@ module "iam_eks_role" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["default:devops-training-docker-nodejs-sample"]
+      namespace_service_accounts = ["load-balancer:load-balancer-controller"]
+    }
+  }
+}
+
+module "iam_csi_driver_irsa" {
+  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  role_name = "jovand-irsa-csi"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
 }
