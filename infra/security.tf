@@ -20,7 +20,18 @@ module "iam_policy" {
               "ecr:PutImage"
           ],
           "Resource": "*"
-      }
+      },
+      {
+      "Effect": "Allow",
+      "Action": [
+        "eks:DescribeCluster",
+        "eks:ListClusters",
+        "eks:AccessKubernetesApi",
+        "sts:AssumeRole",
+
+      ],
+      "Resource": "*"
+    },
   ]
 }
 EOF
