@@ -80,4 +80,93 @@ resource "helm_release" "load_balancer_controller" {
     name  = "vpcId"
     value = module.vpc.vpc_id
   }
+
+  set {
+    name  = "cluster.dnsDomain"
+    value = "jovan-drobnjak.omega.devops.sitesstage.com"
+  }
+  set {
+    name  = "webhookTLS.cert"
+    value = module.acm.acm_certificate_arn
+  }
+}
+
+resource "helm_release" "load_balancer_controller" {
+  name       = "todo-app"
+  repository = module.ecr.repository_url
+  chart      = "jovand-private-ecr"
+  version    = "0.0.1"
+  namespace  = "vegait-training"
+
+  set {
+    name  = "label"
+    value = "todo"
+  }
+  set {
+    name  = "service.protocol"
+    value = "TCP"
+  }
+  set {
+    name  = "service.target_port"
+    value = 3000
+  }
+  set {
+    name  = "service.port"
+    value = 80
+  }
+  set {
+    name  = "ingress.class"
+    value = "alb"
+  }
+  set {
+    name  = "ingress.host"
+    value = "jovan-drobnjak.omega.devops.sitesstage.com"
+  }
+  set {
+    name  = "ingress.path"
+    value = "/"
+  }
+  set {
+    name  = "ingress.path_type"
+    value = "Prefix"
+  }
+
+  set {
+    name  = "secret.user"
+    value = base64encode(lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "username", "what?"))
+  }
+  set {
+    name  = "secret.password"
+    value = base64encode(lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "password", "what?"))
+  }
+  set {
+    name  = "secret.db"
+    value = base64encode(lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "dbname", "what?"))
+  }
+  set {
+    name  = "configmap.port"
+    value = lookup(jsondecode(sensitive(data.aws_secretsmanager_secret_version.current.secret_string)), "port", 0)
+  }
+  set {
+    name  = "configmap.host"
+    value = "jovand-psql-bitnami-postgresql-hl"
+  }
+
+  set {
+    name  = "app.image"
+    value = module.ecr.repository_url
+  }
+  set {
+    name  = "app.tag"
+    value = "docker-1.4.0"
+  }
+  set {
+    name  = "app.replica_count"
+    value = 1
+  }
+  set {
+    name  = "app.port"
+    value = 3000
+  }
+
 }
