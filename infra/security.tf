@@ -35,7 +35,6 @@ module "iam_policy" {
         }
     ]
 }
-
 EOF
 
 }
