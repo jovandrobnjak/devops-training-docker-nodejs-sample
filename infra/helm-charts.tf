@@ -75,4 +75,9 @@ resource "helm_release" "load_balancer_controller" {
     name  = "region"
     value = "eu-central-1"
   }
+
+  set {
+    name  = "vpcId"
+    value = module.vpc.vpc_id
+  }
 }
