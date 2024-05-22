@@ -21,7 +21,7 @@ module "iam_policy" {
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:PutImage"
             ],
-            "Resource": "${module.ecr.repository_arn}"
+            "Resource": "*"
         },
         {
             "Effect": "Allow",
@@ -31,7 +31,7 @@ module "iam_policy" {
                 "eks:ListClusters",
                 "eks:ListNodegroups"
             ],
-            "Resource": "${module.eks.cluster_arn}"
+            "Resource": "*"
         }
     ]
 }
