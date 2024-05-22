@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.label }}-webapp
+  name: {{ .Release.Name }}-webapp
   namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Values.label }}
@@ -16,11 +16,13 @@ spec:
         app: {{ .Values.label }}
     spec:
       containers:
-        - name: {{ .Values.label }}-webapp
+        - name: {{ .Release.Name }}-webapp
           image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
           ports:
             - containerPort: {{ .Values.app.port }}
           envFrom:
             - configMapRef:
-                name: {{ .Values.label }}-configmap
+                name: {{ .Release.Name }}-configmap
+            - secretRef:
+              name: {{ .Release.Name }}-secret
 

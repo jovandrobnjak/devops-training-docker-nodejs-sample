@@ -1,13 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ .Values.label }}-configmap
+    name: {{ .Release.Name }}-configmap
     namespace: {{ .Values.namespace }}
     labels:
         app: {{ .Values.label }}
 data:
-    POSTGRES_USER: {{ .Values.configmap.user }}
-    POSTGRES_PASSWORD: {{ .Values.configmap.password }}
     POSTGRES_HOST: {{ .Values.configmap.host }}
-    POSTGRES_DATABASE: {{ .Values.configmap.db }}
     POSTGRES_PORT: "{{ .Values.configmap.port }}"

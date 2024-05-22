@@ -1,9 +1,11 @@
 configmap:
   host: 
+  port: 
+
+secret:
   user: 
   password: 
   db: 
-  port: 
 
 label: 
 namespace: 
