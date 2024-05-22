@@ -1,29 +1,26 @@
 configmap:
-  host: "jovand-psql-bitnami-postgresql-hl"
-  user: "postgres"
-  password: "postgres"
-  db: "todo"
-  port: 5432
+  host: 
+  user: 
+  password: 
+  db: 
+  port: 
 
-label: todo
-namespace: vegait-training
+label: 
+namespace: 
 
 app:
-  image: ghcr.io/jovandrobnjak/devops-training-docker-nodejs-sample
-  tag: v1.3.0
-  port: 3000
-  replica_count: 1
+  image: 
+  tag: 
+  port: 
+  replica_count: 
 
 service:
-  alb_type: 'external'
-  alb_target_type: 'ip'
-  protocol: TCP
-  port: 80
-  target_port: 3000
+  protocol: 
+  port: 
+  target_port: 
 
 ingress:
-  class: alb
-  certificate_arn: arn:aws:acm:eu-central-1:162340708442:certificate/a3de8c6d-df24-4525-ba37-d7d51521d4bd
-  host: jovan-drobnjak.omega.devops.sitesstage.com
-  path: /
-  path_type: Prefix
+  class: 
+  host: 
+  path: 
+  path_type: 

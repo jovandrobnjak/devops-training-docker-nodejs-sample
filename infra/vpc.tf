@@ -68,4 +68,11 @@ module "vpc" {
   one_nat_gateway_per_az = false
   create_igw             = true
 
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
 }

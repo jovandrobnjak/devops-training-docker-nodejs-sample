@@ -23,5 +23,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.label }}-configmap
-      imagePullSecrets:
-        - name: {{ .Values.label }}-dockerconfig
+
