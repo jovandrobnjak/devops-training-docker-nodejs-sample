@@ -8,7 +8,6 @@ secret:
   db: 
 
 label: 
-namespace: 
 
 app:
   image: 
