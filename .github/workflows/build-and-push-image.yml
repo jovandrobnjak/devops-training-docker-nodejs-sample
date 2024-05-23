@@ -75,11 +75,11 @@ jobs:
               id: kubeconfig
               run: |
                   aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ./kubeconfig
-                  echo "KUBE_CONFIG=$( cat ./kubeconfig )" >> $GITHUB_OUTPUT
+                  echo "::set-output name=KUBE_CONFIG::$(cat ./kubeconfig | base64)"
 
             - name: Update EKS deployment with new image
-              uses: WyriHaximus/github-action-helm3@v3
+              uses: koslib/helm-eks-action@v1.29.0
+              env:
+                  KUBE_CONFIG_DATA: ${{steps.kubeconfig.outputs.KUBE_CONFIG}}
               with:
-                  exec: helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
-                  kubeconfig: ${{ steps.kubeconfig.outputs.KUBE_CONFIG }}
-                  overrule_existing_kubeconfig: 'true'
+                  command: helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
