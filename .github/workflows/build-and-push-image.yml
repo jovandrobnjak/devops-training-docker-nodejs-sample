@@ -71,23 +71,15 @@ jobs:
                   tags: |
                       ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{env.IMAGE_TAG}}
                       ${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}:docker-${{env.IMAGE_TAG}}
-            - name: Install helm and kubectl, login into registry and update kubeconfit, do eks deploy
-              run:
-                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-                  echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
 
-                  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            - name: Set up helm
+              uses: azure/setup-helm@v4.2.0
+              with:
+                  version: 'v3.14.4'
+              id: install
 
-                  kubectl version --client
-                  curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-                  sudo apt-get install apt-transport-https --yes
-                  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-                  sudo apt-get update
-                  sudo apt-get install helm
-                  aws ecr get-login-password \
-                  --region ${{ env.AWS_REGION }} | helm registry login \
-                  --username AWS \
-                  --password-stdin  ${{ steps.login-ecr.outputs.registry}}
-                  aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+            - name: Configure kubeconfig
+              id: kubeconfig
+              run: |
+                  aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} 
                   helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
