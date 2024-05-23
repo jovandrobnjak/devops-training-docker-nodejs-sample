@@ -91,11 +91,11 @@ resource "helm_release" "load_balancer_controller" {
   }
 }
 
-resource "helm_release" "load_balancer_controller" {
-  name       = "todo-app"
-  repository = module.ecr.repository_url
+resource "helm_release" "todo_app" {
+  name       = "jovand-todo-app"
+  repository = join("", ["oci://", module.ecr.repository_registry_id, ".dkr.ecr.eu-central-1.amazonaws.com"])
   chart      = "jovand-private-ecr"
-  version    = "0.0.1"
+  version    = "0.0.2"
   namespace  = "vegait-training"
 
   set {
@@ -112,7 +112,7 @@ resource "helm_release" "load_balancer_controller" {
   }
   set {
     name  = "service.port"
-    value = 80
+    value = 443
   }
   set {
     name  = "ingress.class"
@@ -129,6 +129,10 @@ resource "helm_release" "load_balancer_controller" {
   set {
     name  = "ingress.path_type"
     value = "Prefix"
+  }
+  set {
+    name  = "ingress.certificateArn"
+    value = module.acm.acm_certificate_arn
   }
 
   set {
@@ -158,7 +162,7 @@ resource "helm_release" "load_balancer_controller" {
   }
   set {
     name  = "app.tag"
-    value = "docker-1.4.0"
+    value = "docker-v1.4.3"
   }
   set {
     name  = "app.replica_count"

@@ -96,20 +96,3 @@ module "iam_csi_driver_irsa" {
     }
   }
 }
-
-data "aws_route53_zone" "omage_hosted_zone" {
-  name = "omega.devops.sitesstage.com"
-}
-
-module "acm" {
-  source  = "terraform-aws-modules/acm/aws"
-  version = "~> 4.0"
-
-  domain_name = "jovan-drobnjak.omega.devops.sitesstage.com"
-  zone_id     = data.aws_route53_zone.omage_hosted_zone.zone_id
-
-  validation_method = "DNS"
-
-  wait_for_validation = true
-
-}

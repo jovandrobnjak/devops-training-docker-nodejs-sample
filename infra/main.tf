@@ -48,7 +48,7 @@ provider "helm" {
 
 
   registry {
-    url      = module.ecr.repository_url
+    url      = join("", ["oci://", module.ecr.repository_url])
     username = data.aws_ecr_authorization_token.token.user_name
     password = data.aws_ecr_authorization_token.token.password
   }
