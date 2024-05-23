@@ -24,4 +24,5 @@ ingress:
   class: 
   host: 
   path: 
-  path_type: 
+  path_type:
+  certificateArn: 
