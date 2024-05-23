@@ -18,6 +18,7 @@ env:
     AWS_REGION: eu-central-1
     AWS_ECR_REPOSITORY: jovand-private-ecr
     CLUSTER_NAME: jovand-cluster
+    RELEASE_NAME: jovand-todo-app
 
 jobs:
     test-app:
@@ -79,8 +80,8 @@ jobs:
                   echo 'EOF' >> $GITHUB_ENV
 
             - name: Update EKS deployment with new image
-              uses: koslib/helm-eks-action@master
+              uses: koslib/helm-eks-action@v1.29.0
               env:
                   KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
               with:
-                  command: helm upgrade --reuse-values --set app.tag=docker-${{ env.IMAGE_TAG }} jovand-private-ecr ${{ steps.login-ecr.outputs.registry}}
+                  command: helm upgrade --reuse-values --set app.tag=docker-${{ env.IMAGE_TAG }} ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
