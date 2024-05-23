@@ -19,7 +19,8 @@ module "iam_policy" {
                 "ecr:CompleteLayerUpload",
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
-                "ecr:PutImage"
+                "ecr:PutImage",
+                "ecr:DescribeImages"
             ],
             "Resource": "*"
         },

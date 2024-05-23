@@ -71,15 +71,16 @@ jobs:
                   tags: |
                       ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{env.IMAGE_TAG}}
                       ${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}:docker-${{env.IMAGE_TAG}}
-            - name: Configure kubeconfig
-              id: kubeconfig
+            - name: kubeconfig
               run: |
-                  aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ./kubeconfig
-                  echo "::set-output name=KUBE_CONFIG::$(cat ./kubeconfig | base64)"
+                  aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}  --kubeconfig ./kubeconfig
+                  echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
+                  echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
+                  echo 'EOF' >> $GITHUB_ENV
 
             - name: Update EKS deployment with new image
               uses: koslib/helm-eks-action@v1.29.0
               env:
-                  KUBE_CONFIG_DATA: ${{steps.kubeconfig.outputs.KUBE_CONFIG}}
+                  KUBE_CONFIG_DATA: ${{env.KUBE_CONFIG_DATA}}
               with:
                   command: helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
