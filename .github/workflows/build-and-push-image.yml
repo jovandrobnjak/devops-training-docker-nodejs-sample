@@ -76,7 +76,7 @@ jobs:
               run: |
                   set -e
                   aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ./kubeconfig
-                  echo "kubeconfig=$(cat ./kubeconfig)" >> $GITHUB_ENV
+                  echo "kubeconfig=$(cat ./kubeconfig)" >> $GITHUB_OUTPUT
 
             - name: Update EKS deployment with new image
               uses: WyriHaximus/github-action-helm3@v3
