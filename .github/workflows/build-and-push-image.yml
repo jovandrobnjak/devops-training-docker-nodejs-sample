@@ -49,14 +49,14 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Configure AWS Credentials
-              uses: aws-actions/configure-aws-credentials@v2
+              uses: aws-actions/configure-aws-credentials@v4
               with:
                   role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
                   aws-region: ${{env.AWS_REGION}}
 
             - name: Login to Amazon ECR
               id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+              uses: aws-actions/amazon-ecr-login@v2
               with:
                   registries: ${{ secrets.AWS_ACCOUNT_ID }}
                   mask-password: 'true'
@@ -68,4 +68,4 @@ jobs:
                   push: true
                   tags: |
                       ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{env.IMAGE_TAG}}
-                      ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.AWS_ECR_REPOSITORY }}:docker-${{env.IMAGE_TAG}}
+                      ${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}:docker-${{env.IMAGE_TAG}}

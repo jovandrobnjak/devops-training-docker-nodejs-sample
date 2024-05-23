@@ -95,7 +95,7 @@ resource "helm_release" "todo_app" {
   name       = "jovand-todo-app"
   repository = join("", ["oci://", module.ecr.repository_registry_id, ".dkr.ecr.eu-central-1.amazonaws.com"])
   chart      = "jovand-private-ecr"
-  version    = "0.0.2"
+  version    = "0.0.3"
   namespace  = "vegait-training"
 
   set {
