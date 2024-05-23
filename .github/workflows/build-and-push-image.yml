@@ -19,6 +19,7 @@ env:
     AWS_ECR_REPOSITORY: jovand-private-ecr
     CLUSTER_NAME: jovand-cluster
     RELEASE_NAME: jovand-todo-app
+    CURRENT_CHART_VERSION: 0.0.3
 
 jobs:
     test-app:
@@ -84,4 +85,4 @@ jobs:
               env:
                   KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
               with:
-                  command: helm upgrade --reuse-values --set app.tag=docker-${{ env.IMAGE_TAG }} ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
+                  command: helm upgrade --reuse-values --set app.tag=docker-${{ env.IMAGE_TAG }} ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}:${{ env.CURRENT_CHART_VERSION }}
