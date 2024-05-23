@@ -81,5 +81,5 @@ jobs:
             - name: Upgrade helm chart
               run: |
                   aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} 
-                  cat ~/.kube/config
+                  kubectl get svc
                   helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
