@@ -84,4 +84,4 @@ jobs:
               env:
                   KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
               with:
-                  command: helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} ${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
+                  command: helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
