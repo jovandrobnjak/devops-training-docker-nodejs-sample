@@ -19,11 +19,6 @@ module "eks" {
       resolve_conflicts        = "PRESERVE"
     }
   }
-  access_entries = {
-    github = {
-      principal_arn = module.iam_assumable_role_with_oidc.iam_role_arn
-    }
-  }
 
   eks_managed_node_groups = {
     jovand-node-group = {
