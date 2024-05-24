@@ -7,7 +7,7 @@ module "eks" {
 
   cluster_endpoint_public_access       = true
   cluster_endpoint_private_access      = true
-  cluster_endpoint_public_access_cidrs = ["82.117.210.2/32"]
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -22,6 +22,16 @@ module "eks" {
   access_entries = {
     github = {
       principal_arn = module.iam_assumable_role_with_oidc.iam_role_arn
+
+      policy_associations = {
+        github = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy"
+          access_scope = {
+            namespaces = ["vegait-training"]
+            type       = "namespace"
+          }
+        }
+      }
     }
   }
 
@@ -34,7 +44,7 @@ module "eks" {
       ami_type     = "BOTTLEROCKET_x86_64"
       min_size     = 1
       max_size     = 10
-      desired_size = 1
+      desired_size = 2
 
       instance_types = ["t3.small"]
       capacity_type  = "ON_DEMAND"

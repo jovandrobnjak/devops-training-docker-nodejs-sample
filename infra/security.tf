@@ -27,10 +27,12 @@ module "iam_policy" {
         {
             "Effect": "Allow",
             "Action": [
-                "eks:DescribeCluster",
                 "eks:DescribeNodegroup",
+                "eks:ListNodegroups",
+                "eks:AccessKubernetesApi",
+                "eks:DescribeCluster",
                 "eks:ListClusters",
-                "eks:ListNodegroups"
+                "sts:AssumeRoleWithWebIdentity"
             ],
             "Resource": "*"
         }

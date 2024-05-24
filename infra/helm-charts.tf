@@ -95,7 +95,7 @@ resource "helm_release" "todo_app" {
   name       = "jovand-todo-app"
   repository = join("", ["oci://", module.ecr.repository_registry_id, ".dkr.ecr.eu-central-1.amazonaws.com"])
   chart      = "jovand-private-ecr"
-  version    = "0.0.3"
+  version    = "0.0.4"
   namespace  = "vegait-training"
 
   set {
@@ -162,7 +162,7 @@ resource "helm_release" "todo_app" {
   }
   set {
     name  = "app.tag"
-    value = "docker-v1.4.3"
+    value = "docker-v1.6.2"
   }
   set {
     name  = "app.replica_count"
