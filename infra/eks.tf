@@ -44,7 +44,7 @@ module "eks" {
       ami_type     = "BOTTLEROCKET_x86_64"
       min_size     = 1
       max_size     = 10
-      desired_size = 2
+      desired_size = 1
 
       instance_types = ["t3.small"]
       capacity_type  = "ON_DEMAND"
