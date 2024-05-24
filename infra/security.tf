@@ -19,17 +19,20 @@ module "iam_policy" {
                 "ecr:CompleteLayerUpload",
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
-                "ecr:PutImage"
+                "ecr:PutImage",
+                "ecr:DescribeImages"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "eks:DescribeCluster",
                 "eks:DescribeNodegroup",
+                "eks:ListNodegroups",
+                "eks:AccessKubernetesApi",
+                "eks:DescribeCluster",
                 "eks:ListClusters",
-                "eks:ListNodegroups"
+                "sts:AssumeRoleWithWebIdentity"
             ],
             "Resource": "*"
         }

@@ -17,6 +17,8 @@ env:
     IMAGE_TAG: ${{github.event_name == 'push' && github.ref_name || inputs.version}}
     AWS_REGION: eu-central-1
     AWS_ECR_REPOSITORY: jovand-private-ecr
+    CLUSTER_NAME: jovand-cluster
+    RELEASE_NAME: jovand-todo-app
 
 jobs:
     test-app:
@@ -69,3 +71,14 @@ jobs:
                   tags: |
                       ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{env.IMAGE_TAG}}
                       ${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}:docker-${{env.IMAGE_TAG}}
+
+            - name: Set up helm
+              uses: azure/setup-helm@v4.2.0
+              with:
+                  version: 'v3.14.4'
+              id: install
+
+            - name: Upgrade helm chart
+              run: |
+                  aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} 
+                  helm upgrade --reuse-values --set "app.tag"="docker-${{ env.IMAGE_TAG }}" --namespace vegait-training ${{env.RELEASE_NAME}} oci://${{ steps.login-ecr.outputs.registry}}/${{ env.AWS_ECR_REPOSITORY }}
