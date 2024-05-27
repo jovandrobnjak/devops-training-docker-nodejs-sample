@@ -48,10 +48,6 @@ module "eks" {
 
       instance_types = ["t3.small"]
       capacity_type  = "ON_DEMAND"
-      tags = {
-        "k8s.io/cluster-autoscaler/enabled"        = true
-        "k8s.io/cluster-autoscaler/jovand-cluster" = "jovand-node-group"
-      }
     }
   }
   authentication_mode                      = "API"
