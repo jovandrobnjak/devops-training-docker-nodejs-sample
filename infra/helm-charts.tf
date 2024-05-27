@@ -174,3 +174,40 @@ resource "helm_release" "todo_app" {
   }
 
 }
+
+
+resource "helm_release" "cluster_autoscaler" {
+  name             = "jovand-cluster-autoscaler"
+  repository       = "https://kubernetes.github.io/autoscaler"
+  chart            = "cluster-autoscaler"
+  namespace        = "cluster-autoscaler"
+  version          = "9.37.0"
+  create_namespace = true
+
+  set {
+    name  = "autoDiscovery.clusterName"
+    value = module.eks.cluster_name
+  }
+  set {
+    name  = "awsRegion"
+    value = "eu-central-1"
+  }
+
+  set {
+    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_cluster_autoscaler_irsa.iam_role_arn
+  }
+
+  set {
+    name  = "rbac.serviceAccount.name"
+    value = "cluster-autoscaler-sa"
+  }
+  set {
+    name  = "rbac.serviceAccount.create"
+    value = true
+  }
+  set {
+    name  = "rbac.create"
+    value = true
+  }
+}
