@@ -73,7 +73,7 @@ resource "helm_release" "load_balancer_controller" {
 
   set {
     name  = "region"
-    value = "eu-central-1"
+    value = var.aws_region
   }
 
   set {
@@ -93,7 +93,7 @@ resource "helm_release" "load_balancer_controller" {
 
 resource "helm_release" "todo_app" {
   name       = "jovand-todo-app"
-  repository = join("", ["oci://", module.ecr.repository_registry_id, ".dkr.ecr.eu-central-1.amazonaws.com"])
+  repository = join("", ["oci://", module.ecr.repository_registry_id, ".dkr.ecr.", var.aws_region, ".amazonaws.com"])
   chart      = "jovand-private-ecr"
   version    = "0.0.4"
   namespace  = "vegait-training"
@@ -173,4 +173,41 @@ resource "helm_release" "todo_app" {
     value = 3000
   }
 
+}
+
+
+resource "helm_release" "cluster_autoscaler" {
+  name             = "jovand-cluster-autoscaler"
+  repository       = "https://kubernetes.github.io/autoscaler"
+  chart            = "cluster-autoscaler"
+  namespace        = "cluster-autoscaler"
+  version          = "9.37.0"
+  create_namespace = true
+
+  set {
+    name  = "autoDiscovery.clusterName"
+    value = module.eks.cluster_name
+  }
+  set {
+    name  = "awsRegion"
+    value = var.aws_region
+  }
+
+  set {
+    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_cluster_autoscaler_irsa.iam_role_arn
+  }
+
+  set {
+    name  = "rbac.serviceAccount.name"
+    value = "cluster-autoscaler-sa"
+  }
+  set {
+    name  = "rbac.serviceAccount.create"
+    value = true
+  }
+  set {
+    name  = "rbac.create"
+    value = true
+  }
 }

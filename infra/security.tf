@@ -99,3 +99,17 @@ module "iam_csi_driver_irsa" {
     }
   }
 }
+module "iam_cluster_autoscaler_irsa" {
+  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  role_name = "jovand-irsa-cluster-autoscaler"
+
+  attach_cluster_autoscaler_policy = true
+  cluster_autoscaler_cluster_names = [module.eks.cluster_name]
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["cluster-autoscaler:cluster-autoscaler-sa"]
+    }
+  }
+}
