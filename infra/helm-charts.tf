@@ -80,15 +80,6 @@ resource "helm_release" "load_balancer_controller" {
     name  = "vpcId"
     value = module.vpc.vpc_id
   }
-
-  set {
-    name  = "cluster.dnsDomain"
-    value = "jovan-drobnjak.omega.devops.sitesstage.com"
-  }
-  set {
-    name  = "webhookTLS.cert"
-    value = module.acm.acm_certificate_arn
-  }
 }
 
 resource "helm_release" "todo_app" {

@@ -35,6 +35,6 @@ data "kubernetes_service" "data_load_balancer" {
 }
 
 data "aws_lb" "load_balancer_source" {
-  depends_on = [helm_release.load_balancer_controller]
+  depends_on = [helm_release.todo_app]
   name       = "k8s-vegaittr-jovandto-95ab8df602"
 }
